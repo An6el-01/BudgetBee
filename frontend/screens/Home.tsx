@@ -15,6 +15,7 @@ import AiInsights from "../components/HomeScreen/BudgetsHomeComponent";
 import RecentTransactions from "../components/HomeScreen/RecentTransactions";
 import SavingsGoalsProgress from "../components/HomeScreen/SavingsGoalsProgress";
 import BudgetsHomeComponent from "../components/HomeScreen/BudgetsHomeComponent";
+import InsertDataComponent from "../components/HomeScreen/InsertDataComponent";
 
 const colors = {
   primary: '#FCB900',
@@ -259,6 +260,8 @@ export default function Home() {
       <View style={styles.buttonContainer}>
         <Button title="View Reports" onPress={() => navigation.navigate('Statistics')} />
       </View>
+
+      <InsertDataComponent/>
 
       {/* Add a button to export the database */}
       <View style={styles.buttonContainer}>

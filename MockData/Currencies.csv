@@ -1,0 +1,6 @@
+id,base_currency,conversion_rate,name
+1,USD,"{""USD"": 1, ""EUR"": 0.85, ""GBP"": 0.77}",US Dollar
+2,GBP,"{""USD"": 1, ""EUR"": 0.85, ""GBP"": 0.77}",British Pound
+3,EUR,"{""USD"": 1, ""EUR"": 0.85, ""GBP"": 0.77}",British Pound
+4,EUR,"{""USD"": 1, ""EUR"": 0.85, ""GBP"": 0.77}",British Pound
+5,USD,"{""USD"": 1, ""EUR"": 0.85, ""GBP"": 0.77}",Euro

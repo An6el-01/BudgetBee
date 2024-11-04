@@ -113,7 +113,7 @@ export default function TransactionDetails({ navigation, route }: TransactionDet
       setDate(new Date());
 
       Alert.alert('Success', 'Transaction added successfully');
-      navigation.navigate("AllTransactions");
+      navigation.navigate("Transactions");
     } catch (error) {
       Alert.alert('Error', 'Failed to save transaction. Please try again.');
       console.error(error);
