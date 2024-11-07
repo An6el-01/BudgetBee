@@ -17,7 +17,7 @@ interface BudgetProgressProps {
 const BudgetsHomeComponent: React.FC<BudgetProgressProps> = ({ budgets, categories }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
+  const formatCurrency = (value: number | null) => `$${(value ?? 0).toFixed(2)}`;
 
   const getCategoryName = (categoryId: number) => {
     const category = categories.find(category => category.id === categoryId);
