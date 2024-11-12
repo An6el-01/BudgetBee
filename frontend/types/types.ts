@@ -120,3 +120,8 @@ export interface Transactions {
   export interface BackupData{
     [key: string]: Array<{ [key: string]: any }>;
   }
+
+  export type CrytpoAsset = {
+    crypto_name: string;
+    amount_held: number;
+  }
