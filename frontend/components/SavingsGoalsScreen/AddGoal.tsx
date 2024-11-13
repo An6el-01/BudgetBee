@@ -26,7 +26,15 @@ const styles = StyleSheet.create({
 });
 
 export default function AddGoal({ insertGoal, loadGoals, setShowAddGoal }: { insertGoal: (goal: SavingsGoals) => Promise<void>, loadGoals: () => Promise<void>, setShowAddGoal: React.Dispatch<React.SetStateAction<boolean>> }) {
-    const [newGoal, setNewGoal] = React.useState<SavingsGoals>({ id: 0, user_id: 0, name: '', amount: 0, progress: 0, target_date: Date.now() });
+    const [newGoal, setNewGoal] = React.useState<SavingsGoals>({ 
+        id: 0, 
+        user_id: 0, 
+        name: '', 
+        amount: 0, 
+        progress: 0, 
+        target_date: Date.now(),
+        favorite: false,
+     });
     const [showDatePicker, setShowDatePicker] = React.useState(false);
 
     const handleAddGoal = async () => {
@@ -38,7 +46,14 @@ export default function AddGoal({ insertGoal, loadGoals, setShowAddGoal }: { ins
             }
             const goalToInsert = { ...newGoal, user_id: parseInt(userId), target_date: newGoal.target_date || Date.now() };
             await insertGoal(goalToInsert);
-            setNewGoal({ id: 0, user_id: 0, name: '', amount: 0, progress: 0, target_date: Date.now() });
+            setNewGoal({ 
+                id: 0, 
+                user_id: 0, 
+                name: '', 
+                amount: 0, 
+                progress: 0, 
+                target_date: Date.now(),
+                favorite: false });
             loadGoals();
             setShowAddGoal(false);
         } catch (error) {

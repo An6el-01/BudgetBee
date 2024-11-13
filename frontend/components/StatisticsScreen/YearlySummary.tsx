@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { useSQLiteContext } from 'expo-sqlite/next';
+import { SQLiteContext } from '../../App';
 import { useFocusEffect } from '@react-navigation/native';
 import { Transactions, TransactionsCategories, SavingsGoals } from '../../types/types';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -173,7 +173,7 @@ const getTextColorForBackground = (backgroundColor: string) => {
 };
 
 export default function YearlySummary() {
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [categories, setCategories] = React.useState<TransactionsCategories[]>([]);
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
@@ -185,6 +185,7 @@ export default function YearlySummary() {
 
   useFocusEffect(
     React.useCallback(() => {
+      if(!db) return;
       
       db.withTransactionAsync(async () => {
           await loadGoals();
@@ -195,6 +196,7 @@ export default function YearlySummary() {
   );
 
   const fetchData = async () => {
+    if(!db) return;
     const startOfYear = new Date(currentYear, 0, 1).getTime();
     const endOfYear = new Date(currentYear + 1, 0, 1).getTime();
 
@@ -234,6 +236,7 @@ export default function YearlySummary() {
 
   useFocusEffect(
     React.useCallback(() => {
+      if(!db) return;
       db.withTransactionAsync(async () => {
         await fetchData();
       });
@@ -248,6 +251,7 @@ export default function YearlySummary() {
   }));
 
   const loadGoals = async () => {
+    if(!db) return;
     const result = await db.getAllAsync<SavingsGoals>(
       'SELECT * FROM SavingsGoals WHERE favorite = ?;',
       [1]

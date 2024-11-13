@@ -1,9 +1,9 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import Card from "../ui/Card";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { useSQLiteContext } from "expo-sqlite/next";
+import { SQLiteContext } from "../../App";
 import { TransactionsCategories, Transactions } from "../../types/types";
 
 export default function AddTransaction({
@@ -20,13 +20,14 @@ export default function AddTransaction({
   const [description, setDescription] = React.useState<string>("");
   const [category, setCategory] = React.useState<string>("Expense");
   const [categoryId, setCategoryId] = React.useState<number>(1);
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
 
   React.useEffect(() => {
     getExpenseType(currentTab);
   }, [currentTab]);
 
   async function getExpenseType(currentTab: number) {
+    if(!db) return;
     setCategory(currentTab === 0 ? "Expense" : "Income");
     const type = currentTab === 0 ? "Expense" : "Income";
 

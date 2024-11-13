@@ -1,8 +1,8 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Transactions, SavingsGoals, Budgets, TransactionsCategories } from "../types/types";
-import { useSQLiteContext } from "expo-sqlite/next";
+import { SQLiteContext } from "../App";
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigationTypes';
 import * as FileSystem from 'expo-file-system';
@@ -83,11 +83,12 @@ export default function Home() {
   const [categories, setCategories] = React.useState<TransactionsCategories[]>([]);
 
 
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useFocusEffect(
     React.useCallback(() => {
+      if(!db)return;
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
       db.withTransactionAsync(async () => {
@@ -119,6 +120,7 @@ export default function Home() {
   
 
   async function getRecentTransactionsData() {
+    if(!db) return;
     // Fetch recent transactions for the current month
     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
@@ -133,6 +135,7 @@ export default function Home() {
   }
 
   const getYearlyData = async (month: number, year: number) => {
+    if (!db) return;
     const startOfMonth = new Date(year, month, 1).getTime();
     const endOfMonth = new Date(year, month + 1, 0).getTime();
     
@@ -170,6 +173,7 @@ export default function Home() {
   };
 
   const calculateNetWorth = async () => {
+    if(!db) return;
     const result = await db.getAllAsync<Transactions>(
       'SELECT * FROM Transactions ORDER BY date DESC;'  // Fetch all transactions
     );
@@ -190,6 +194,7 @@ export default function Home() {
   };
 
   const loadGoals = async () => {
+    if(!db) return;
     const result = await db.getAllAsync<SavingsGoals>(
       'SELECT * FROM SavingsGoals WHERE favorite = ?;',
       [1]
@@ -205,6 +210,7 @@ export default function Home() {
   }));
   
   const loadBudgets = async () => {
+    if(!db) return;
     const result = await db.getAllAsync<Budgets>(
       'SELECT * FROM Budgets WHERE favorite = ?;',
       [1]
@@ -219,6 +225,7 @@ export default function Home() {
   }));
 
   const loadCategories = async () => {
+    if(!db) return;
     const result = await db.getAllAsync<TransactionsCategories>('SELECT * FROM TransactionsCategories;');
     setCategories(result);
   };

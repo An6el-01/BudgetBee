@@ -1,16 +1,19 @@
-import { useSQLiteContext } from "expo-sqlite";
+import { useContext } from "react";
+import { SQLiteContext } from "../App";
 import { TransactionsCategories, Budgets, Transactions, SavingsGoals } from "../types/types";
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth} from 'date-fns';
 
 export const useGoalDataAccess = () => {
-    const db = useSQLiteContext();
+    const db = useContext(SQLiteContext);
 
     const getCategories = async (): Promise<TransactionsCategories[]> => {
+        if (!db) return [];
         const results = await db.getAllAsync<TransactionsCategories>('SELECT * FROM TransactionsCategories');
         return results;
     };
 
     const insertBudget = async (userId: number, categoryId: number, amount: number, type: 'monthly' | 'weekly') => {
+        if (!db) return;
         const currentTimestamp = Date.now();
         await db.runAsync(
           `INSERT INTO Budgets (user_id, category_id, amount, type, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?);`,
@@ -19,11 +22,13 @@ export const useGoalDataAccess = () => {
       };
 
     const getBudgets = async (): Promise<Budgets[]> => {
+        if (!db) return [];
         const results = await db.getAllAsync<Budgets>('SELECT * FROM Budgets');
         return results;
     };
 
     const updateBudget = async (categoryId: number, amount: number, type: 'monthly' | 'weekly') => {
+        if(!db) return;
         const currentTimestamp = Date.now(); // Get the current timestamp
         await db.runAsync(
             `UPDATE Budgets SET amount = ?, spent = (SELECT SUM(amount) FROM Transactions WHERE category_id = ? AND type = ?), updated_at = ? WHERE category_id = ? AND type = ?;`,
@@ -32,6 +37,7 @@ export const useGoalDataAccess = () => {
     };    
 
     const deleteBudget = async (categoryId: number, type: 'monthly' | 'weekly') => {
+        if(!db) return;
         await db.runAsync(
             `DELETE FROM Budgets WHERE category_id = ? AND type = ?;`,
             [categoryId, type]
@@ -39,6 +45,7 @@ export const useGoalDataAccess = () => {
     };
     
     const getTransactionsForCategory = async (categoryId: number, startDate: Date, endDate: Date): Promise<Transactions[]> => {
+        if (!db) return [];
         const results = await db.getAllAsync<Transactions>(
             'SELECT * FROM Transactions WHERE category_id = ? AND date BETWEEN ? AND ?',
             [categoryId, startDate.getTime(), endDate.getTime()]
@@ -46,6 +53,7 @@ export const useGoalDataAccess = () => {
         return results;
     };
     const updateBudgetFavorite = async (id: number, favorite: boolean) => {
+        if(!db) return;
         return await db.runAsync(
           'UPDATE Budgets SET favorite = ? WHERE id = ?',
           [favorite ? 1 : 0, id]

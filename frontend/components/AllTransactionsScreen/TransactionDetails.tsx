@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -6,7 +6,7 @@ import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/navigationTypes';
 import { categoryColors, categoryEmojies } from '../../types/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSQLiteContext } from 'expo-sqlite/next';
+import { SQLiteContext } from '../../App';
 import { useGoalDataAccess } from '../../database/BudgetDataAccess';
 import { categoryMapping } from '../../types/categoryMapping';
 
@@ -26,7 +26,7 @@ export default function TransactionDetails({ navigation, route }: TransactionDet
   const [description, setDescription] = useState<string>(''); 
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const db = useSQLiteContext(); 
+  const db = useContext(SQLiteContext); 
   const [emojiScale] = useState(new Animated.Value(1)); // Scale animation value for the "jump" effect
   const [emojiAnimation, setEmojiAnimation] = useState<Animated.CompositeAnimation | null>(null); // Store reference to animation
 
@@ -95,6 +95,7 @@ export default function TransactionDetails({ navigation, route }: TransactionDet
     };
 
     try {
+      if(!db) return;
       await db.runAsync(
         `INSERT INTO Transactions (user_id, category_id, amount, date, description, type) VALUES (?, ?, ?, ?, ?, ?);`,
         [

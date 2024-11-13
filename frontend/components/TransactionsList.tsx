@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { TransactionsCategories, Transactions } from '../types/types';
 import { TouchableOpacity, View, Text, Alert } from 'react-native';
 import TransactionListItem from './TransactionListItem';
-import { useSQLiteContext } from 'expo-sqlite/next'; // Import your database context
+import { SQLiteContext } from '../App';
 
 export default function TransactionList({
   transactions,
@@ -14,7 +14,7 @@ export default function TransactionList({
   deleteTransaction: (id: number) => Promise<void>;
 }) {
   const [categoriesFromDB, setCategoriesFromDB] = React.useState<TransactionsCategories[]>([]); // State to store categories from the DB
-  const db = useSQLiteContext(); // Use SQLite DB context
+  const db = useContext(SQLiteContext); // Use SQLite DB context
 
   // Fetch categories from the database if not passed
   React.useEffect(() => {
@@ -26,6 +26,7 @@ export default function TransactionList({
 
   const fetchCategoriesFromDB = async () => {
     try {
+      if(!db) return;
       const result = await db.getAllAsync<TransactionsCategories>(`SELECT * FROM TransactionsCategories;`);
       setCategoriesFromDB(result); // Set the categories fetched from DB
     } catch (error) {

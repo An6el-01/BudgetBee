@@ -1,6 +1,5 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useSQLiteContext } from "expo-sqlite/next";
 import IncomeExpenseGraph from '../components/AllTransactionsScreen/IncomeExpenseGraph';
 import TransactionList from '../components/TransactionsList';
 import { Transactions } from "../types/types";
@@ -8,9 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigationTypes';
 import { Ionicons } from '@expo/vector-icons';
+import { SQLiteContext } from '../App';
 
 export default function AllTransactions() {
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
   const [transactions, setTransactions] = React.useState<Transactions[]>([]);
   const [selectedMonth, setSelectedMonth] = React.useState<number>(new Date().getMonth());
   const [selectedYear, setSelectedYear] = React.useState<number>(new Date().getFullYear());
@@ -38,6 +38,7 @@ export default function AllTransactions() {
     setIsLoading(true);
     
     try {
+      if (!db) return;
       const startOfMonth = new Date(year, month, 1).getTime();
       const endOfMonth = new Date(year, month + 1, 0).getTime();
     
@@ -81,6 +82,7 @@ export default function AllTransactions() {
 
   const deleteTransaction = async (id: number): Promise<void> => {
     try {
+      if(!db) return;
       await db.runAsync(
         `DELETE FROM Transactions WHERE id = ?;`,
         [id]

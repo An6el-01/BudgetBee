@@ -1,10 +1,9 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from '../App'; // Correctly import the AuthContext
+import { AuthContext, SQLiteContext } from '../App'; // Correctly import the AuthContext
 import { RootStackParamList } from '../types/navigationTypes';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { useSQLiteContext } from 'expo-sqlite/next'; // Import SQLite context
 import bcrypt from 'react-native-bcrypt'; // Import bcrypt for password hashing
 import { Users } from '../types/types';
 import  BottomNavBar  from '../navigation/BottomNavBar';
@@ -14,7 +13,7 @@ const LogInPage = () => {
   const [password, setPassword] = React.useState('');
   const authContext = React.useContext(AuthContext); // Use AuthContext
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const db = useSQLiteContext(); // Access SQLite context
+  const db = useContext(SQLiteContext); // Access SQLite context
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -23,6 +22,7 @@ const LogInPage = () => {
     }
 
     try {
+      if(!db) return;
       const results = await db.getAllAsync<Users>(
         'SELECT * FROM Users WHERE username = ?',
         [username]

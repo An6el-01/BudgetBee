@@ -121,7 +121,7 @@ export interface Transactions {
     [key: string]: Array<{ [key: string]: any }>;
   }
 
-  export type CrytpoAsset = {
+  export type CryptoAsset = {
     crypto_name: string;
     amount_held: number;
   }

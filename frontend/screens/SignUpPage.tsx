@@ -1,11 +1,11 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { useSQLiteContext } from 'expo-sqlite/next'; // Assuming you're using expo-sqlite
 import bcrypt from 'react-native-bcrypt'; // Correct bcrypt library for React Native
 import { RootStackParamList } from '../types/navigationTypes';
 import { Users } from '../types/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SQLiteContext } from '../App';
 
 
 const SignUpPage = () => {
@@ -14,7 +14,7 @@ const SignUpPage = () => {
   const [password, setPassword] = React.useState('');
   const [isPremium, setIsPremium] = React.useState(false); // New state to track if the user has premium
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
 
   const handleSignUp = async () => {
     if (!username || !email || !password) {
@@ -23,6 +23,7 @@ const SignUpPage = () => {
     }
 
     try {
+      if(!db) return;
       // Hash the password before saving
       const salt = bcrypt.genSaltSync(10);
       const passwordHash = bcrypt.hashSync(password, salt);

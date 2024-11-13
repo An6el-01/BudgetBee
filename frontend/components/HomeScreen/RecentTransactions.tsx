@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RecentTransactionProps } from '../../types/types';
 import { RootStackParamList } from '../../types/navigationTypes';
 import { NavigationProp } from '@react-navigation/native';
 import TransactionList from '../TransactionsList';
-import { useSQLiteContext } from 'expo-sqlite/next';
+import { SQLiteContext } from '../../App';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const RecentTransactions: React.FC<RecentTransactionProps> = ({ transactions }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
 
   // Display only the last 3 transactions
   const recentTransactions = transactions.slice(0, 3);
   
   const deleteTransaction = async (id: number): Promise<void> => {
     try {
+      if(!db) return;
       await db.runAsync(
         `DELETE FROM Transactions WHERE id = ?;`,
         [id]

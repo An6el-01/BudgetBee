@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import PortfolioValue from '../components/CryptoPortfolioScreen/PortfolioValue';
-import BuySellTransfer from '../components/CryptoPortfolioScreen/BuySellTransfer';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '../types/navigationTypes';
 import CryptoReports from '../components/CryptoPortfolioScreen/CryptoReports';
+import { CryptoAsset } from '../types/types';
+import { useSQLiteContext } from 'expo-sqlite';
+import { SQLiteContext } from '../App';
 
 const colors = {
   primary: '#FCB900',
@@ -74,6 +76,13 @@ const styles = StyleSheet.create({
 
 const CryptoPortfolio = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const db = useContext(SQLiteContext);
+  const [portfolio, setPortfolio] = React.useState<CryptoAsset[]>([]);
+  const [isLoading, setIsLoading] =  React.useState(true);
+
+  React.useEffect(() => {
+    fetchPortfolioData();
+  }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -89,13 +98,25 @@ const CryptoPortfolio = () => {
     });
   }, [navigation]);
 
+  const fetchPortfolioData = async () => {
+    try{
+      if (!db) return;
+      const result = await db.getAllAsync<CryptoAsset>(
+        `SELECT crypto_name, amount_held FROM CryptoPortfolios WHERE user_id = ?`,
+        [1]
+      );
+      setPortfolio(result);
+    }catch(error) {
+      console.error('Error fetching portfolio data:', error);
+    }finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Display total portfolio value */}
-      <PortfolioValue />
-
-      {/* Buy/Sell/Transfer crypto actions */}
-      <BuySellTransfer />
+      <PortfolioValue  portfolio={portfolio}/>
 
       {/* Performance Report */}
       <View style={styles.card}>

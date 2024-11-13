@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { fetchCryptoMarketChart, fetchCryptoPrices } from '../../API/cryptoService'; 
-import { useSQLiteContext } from 'expo-sqlite/next';
+import { fetchCryptoMarketChart, fetchCryptoMarketData } from '../../API/cryptoService'; 
+import { SQLiteContext } from '../../App';
 
 const colors = {
   primary: '#FCB900',
@@ -31,7 +31,7 @@ type ChartData = {
 };
 
 const CryptoReports = () => {
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
   const [portfolioData, setPortfolioData] = useState<PortfolioAsset[]>([]);
   const [topAsset, setTopAsset] = useState<string>('');
   const [portfolioChange, setPortfolioChange] = useState<number>(0);
@@ -43,6 +43,7 @@ const CryptoReports = () => {
 
   const loadPortfolioData = async () => {
     try {
+      if(!db) return;
       const portfolio: PortfolioAsset[] = await db.getAllAsync('SELECT * FROM CryptoPortfolios;');
       setPortfolioData(portfolio);
 
@@ -68,7 +69,7 @@ const CryptoReports = () => {
   const calculateFinalValue = async (portfolio: PortfolioAsset[]): Promise<number> => {
     try {
       const cryptoIds = portfolio.map((asset) => asset.crypto_name.toLowerCase());
-      const prices = await fetchCryptoPrices(cryptoIds);
+      const prices = await fetchCryptoMarketData(cryptoIds);
 
       if (!prices) {
         console.error('Failed to fetch prices: Data returned is null or undefined');
@@ -76,8 +77,9 @@ const CryptoReports = () => {
       }
 
       return portfolio.reduce((sum, asset) => {
-        const price = prices[asset.crypto_name.toLowerCase()]?.usd || 0;
-        return sum + asset.amount_held * price;
+        const price = prices.find((priceData: { id: string, current_price: number}) =>
+          priceData.id === asset.crypto_name.toLowerCase())?.current_price || 0;
+          return sum + asset.amount_held * price;
       }, 0);
     } catch (error) {
       console.error('Error calculating final portfolio value:', error);

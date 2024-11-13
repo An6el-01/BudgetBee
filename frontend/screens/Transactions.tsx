@@ -1,8 +1,7 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, View, TextInput, Button, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import Card from '../components/ui/Card';
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { useSQLiteContext } from 'expo-sqlite/next';
 import { TransactionsCategories, Transactions } from '../types/types';
 import { useGoalDataAccess } from '../database/BudgetDataAccess';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
@@ -13,6 +12,7 @@ import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigationTypes';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { SQLiteContext } from '../App';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 
 
 export default function NewTransaction() {
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { getBudgets, updateBudget, getTransactionsForCategory } = useGoalDataAccess();
   const [currentTab, setCurrentTab] = React.useState<number>(0);
@@ -54,6 +54,7 @@ export default function NewTransaction() {
  
 
   async function getExpenseType(currentTab: number) {
+    if(!db) return;
     setCategory(currentTab === 0 ? "Expense" : "Income");
     const type = currentTab === 0 ? "Expense" : "Income";
 
@@ -66,6 +67,7 @@ export default function NewTransaction() {
 
   //CHECK THIS TO ENSURE user_id GETS POPULATED WITH THE ID OF THE LOGGED IN USER
   const insertTransaction = async (transaction: Transactions) => {
+    if(!db) return;
     await db.withTransactionAsync(async () => {
       await db.runAsync(
         `INSERT INTO Transactions (user_id ,category_id, amount, date, description, type) VALUES (?,?, ?, ?, ?, ?);`,

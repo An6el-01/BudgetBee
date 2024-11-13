@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
-import { useSQLiteContext } from 'expo-sqlite/next';
-
+import { SQLiteContext } from '../../App';
 interface Props {
   onClose: () => void;
 }
@@ -16,7 +15,7 @@ interface Recommendation {
 const SavingsRecommendations: React.FC<Props> = ({ onClose }) => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
 
   useEffect(() => {
     fetchRecommendations();
@@ -83,6 +82,7 @@ const SavingsRecommendations: React.FC<Props> = ({ onClose }) => {
 
   const fetchTransactionsFromDB = async (): Promise<any[]> => {
     try {
+      if(!db) return [];
       return await db.getAllAsync('SELECT * FROM Transactions');
     } catch (error) {
       console.error('Error fetching transactions:', error);
@@ -92,6 +92,7 @@ const SavingsRecommendations: React.FC<Props> = ({ onClose }) => {
 
   const fetchCategoriesFromDB = async (): Promise<any[]> => {
     try {
+      if(!db) return [];
       return await db.getAllAsync('SELECT * FROM TransactionsCategories');
     } catch (error) {
       console.error('Error fetching categories:', error);

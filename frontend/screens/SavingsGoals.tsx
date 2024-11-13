@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, Text, View, StyleSheet, Button, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SavingsGoals } from '../types/types';
 import { useGoalDataAccess } from "../database/GoalDataAccess";

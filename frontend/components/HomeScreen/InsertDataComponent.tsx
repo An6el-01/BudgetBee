@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Button, StyleSheet, Alert } from 'react-native';
-import { useSQLiteContext } from 'expo-sqlite/next';
+import { SQLiteContext } from '../../App';
 import { tableDataMap } from '../../database/mockData';
 // Explicitly require each file statically
 
 const InsertDataComponent = () => {
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
 
   // Function to insert data from CSV files into designated tables
   const insertData = async () => {
@@ -18,6 +18,7 @@ const InsertDataComponent = () => {
           const values = Object.values(item) as any[]; // Type assertion to avoid type errors
 
           try {
+            if(!db) return;
             await db.runAsync(
               `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`,
               values

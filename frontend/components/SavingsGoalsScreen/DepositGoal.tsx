@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React, { useContext} from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
-import { SavingsGoals } from '../types/types';
-import { useSQLiteContext } from 'expo-sqlite';
+import { SavingsGoals } from '../../types/types';
+import { SQLiteContext } from '../../App';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
 export default function DepositGoal({ goal, loadGoals, setShowDepositGoal }: { goal: SavingsGoals, loadGoals: () => Promise<void>, setShowDepositGoal: React.Dispatch<React.SetStateAction<SavingsGoals | null>> }) {
     const [depositAmount, setDepositAmount] = React.useState<string>('');
-    const db = useSQLiteContext();
+    const db = useContext(SQLiteContext);
 
     const handleDeposit = async () => {
         const amount = parseFloat(depositAmount);
@@ -42,6 +42,7 @@ export default function DepositGoal({ goal, loadGoals, setShowDepositGoal }: { g
     const depositGoal = async (goal: SavingsGoals, amount: number) => {
         const date = new Date().getTime();
         try {    
+            if(!db) return;
             const updateResult = await db.runAsync(
                 'UPDATE SavingsGoals SET progress = progress + ? WHERE id = ?;',
                 [amount, goal.id]
@@ -73,6 +74,7 @@ export default function DepositGoal({ goal, loadGoals, setShowDepositGoal }: { g
     //SORT THIS FOR NOTIFICATIONS ON CONTRIBUTING TO PENDING GOALS
     const logContributions = async (goalId: number) => {
         try {
+            if( !db) return;
             const contributions = await db.getAllAsync<{ id: number; goal_id: number; amount: number; date: number }>(
                 'SELECT * FROM Contributions WHERE goal_id = ?;',
                 [goalId]

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { fetchCryptoPrices } from '../../API/cryptoService';
-import { CrytpoAsset } from '../../types/types';
+import { fetchCryptoMarketData } from '../../API/cryptoService';
+import { CryptoAsset } from '../../types/types';
 
 type PortfolioValueProps = {
-  portfolio: CrytpoAsset[]
+  portfolio: CryptoAsset[]
 }
 
 
@@ -14,11 +14,12 @@ const PortfolioValue: React.FC<PortfolioValueProps> = ({ portfolio }) => {
   useEffect(() => {
     const getPortfolioValue = async () => {
       const cryptoIds = portfolio.map(asset => asset.crypto_name.toLowerCase());
-      const prices = await fetchCryptoPrices(cryptoIds);
+      const prices = await fetchCryptoMarketData(cryptoIds);
 
       if (prices) {
         const value = portfolio.reduce((sum, asset) => {
-          const price = prices[asset.crypto_name.toLowerCase()]?.usd || 0;
+          const price = prices.find((priceData: { id: string, current_price: number }) => 
+          priceData.id === asset.crypto_name.toLowerCase())?.current_price || 0;
           return sum + asset.amount_held * price;
         }, 0);
         setTotalValue(value);

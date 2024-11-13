@@ -1,13 +1,13 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { TransactionsCategories, Transactions } from "../types/types";
-import { useSQLiteContext } from 'expo-sqlite/next';
 import { useFocusEffect, useNavigation, NavigationProp } from '@react-navigation/native';
 import { categoryColors, categoryEmojies } from '../types/constants';
 import PieChart from 'react-native-pie-chart';
 import Card from "../components/ui/Card";
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '../types/navigationTypes';
+import { SQLiteContext } from '../App';
 
 const colors = {
   primary: '#FCB900',
@@ -192,7 +192,7 @@ export default function Statistics() {
   const [filter, setFilter] = React.useState<string>('Expense');
   const [currentMonth, setCurrentMonth] = React.useState(new Date());
   const [categories, setCategories] = React.useState<TransactionsCategories[]>([]);
-  const db = useSQLiteContext();
+  const db = useContext(SQLiteContext);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>(); 
 
   React.useLayoutEffect(() => {
@@ -207,6 +207,7 @@ export default function Statistics() {
   }, [navigation]);
 
   const fetchData = async () => {
+    if (!db) return;
     const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
     const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
     endOfMonth.setMilliseconds(endOfMonth.getMilliseconds() - 1);
@@ -228,6 +229,7 @@ export default function Statistics() {
 
   useFocusEffect(
     React.useCallback(() => {
+      if (!db) return;
       db.withTransactionAsync(async () => {
         await fetchData();
       });
