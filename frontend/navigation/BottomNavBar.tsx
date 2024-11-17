@@ -8,7 +8,6 @@ import { RootStackParamList } from '../types/navigationTypes';
 
 // Screens
 import HomeScreen from '../screens/Home';
-import TransactionsScreen from '../screens/Transactions';
 import NewTransactionInput from '../components/AllTransactionsScreen/NewTransactionInput';
 import TransactionDetails from '../components/AllTransactionsScreen/TransactionDetails';
 import BudgetsScreen from '../screens/Budgets';
@@ -21,6 +20,7 @@ import CryptoReports from '../components/CryptoPortfolioScreen/CryptoReports';
 import CryptoAIRecommendations from '../components/CryptoPortfolioScreen/CryptoAIRecommendations';
 import CryptoPortfolio from '../screens/CryptoPortfolio';
 import FinancialProjections from '../components/StatisticsScreen/FinancialProjections';
+import AddCryptoAsset from '../components/CryptoPortfolioScreen/AddingAsset/AddCryptoAsset';
 
 const Tab = createBottomTabNavigator();
 const StatsStack = createNativeStackNavigator<RootStackParamList>();
@@ -113,7 +113,7 @@ export default function BottomNavBar() {
             iconName = focused ? 'swap-vertical' : 'swap-vertical-outline';
           } else if (route.name === 'Statistics') {
             iconName = focused ? 'stats-chart' : 'stats-chart-outline';
-          } else if (route.name === 'Crypto Portfolio') {
+          } else if (route.name === 'CryptoPortfolio') {
             iconName = focused ? 'logo-bitcoin' : 'logo-bitcoin';
           }
 
@@ -126,7 +126,7 @@ export default function BottomNavBar() {
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
       <Tab.Screen name="Transactions" component={AllTransactions} options={{ title: 'Transactions' }} />
       <Tab.Screen name="Statistics" component={Statistics} options={{ title: 'Statistics' }} />
-      <Tab.Screen name="Crypto Portfolio" component={CryptoPortfolio} options={{ title: 'Crypto' }} />
+      <Tab.Screen name="CryptoPortfolio" component={CryptoPortfolio} options={{ title: 'Crypto' }} />
 
       {/* Hide the tab button for the settings and savings goals */}
       <Tab.Screen
@@ -199,6 +199,20 @@ export default function BottomNavBar() {
           ),
         })} 
         />
+      <Tab.Screen
+        name="AddCryptoAsset"
+        component={AddCryptoAsset}
+        options={({ navigation }) => ({
+          title: 'Add Crypto Asset',
+          tabBarButton:() => null,
+          headerLeft: () => (
+            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("Crypto Portfolio")}>
+              <Ionicons name="arrow-back" size={24} color="#000000" />
+              <Text style={styles.backIconName}>Go Back</Text>
+            </TouchableOpacity>
+          ),
+        })} 
+        />
          <Tab.Screen
         name="CryptoReports"
         component={CryptoReports}
@@ -242,6 +256,7 @@ export default function BottomNavBar() {
         })} 
         />
     </Tab.Navigator>
+     
     
   );
 }

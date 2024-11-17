@@ -1,7 +1,6 @@
-// navigationTypes.ts
 export type RootStackParamList = {
-    MainTabs: undefined; // Add this line
-    LoginPage: undefined; // Add this line
+    MainTabs: undefined; 
+    LoginPage: undefined; 
     HomeMain: undefined;
     GoalsMain: undefined;
     Transactions:undefined
@@ -19,4 +18,5 @@ export type RootStackParamList = {
     NewTransactionInput: undefined;
     FinancialProjections:undefined;
     TransactionDetails: { amount: string };
+    AddCryptoAsset: undefined;
 };

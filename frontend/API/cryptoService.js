@@ -57,7 +57,7 @@ export const fetchCryptoMarketChart = async (cryptoId, vsCurrency = 'usd', days 
 
   export const fetchCryptoDetails =  async (cryptoId) => {
     try{
-      const resposne = await axios.get(`${COINGECKO_API_URL}/coins/${cryptoId}`, {
+      const response = await axios.get(`${COINGECKO_API_URL}/coins/${cryptoId}`, {
         params: {
           localization: false,
           tickers: false,
@@ -67,9 +67,28 @@ export const fetchCryptoMarketChart = async (cryptoId, vsCurrency = 'usd', days 
           sparkling: false,
         },
       });
-      return resposne.data;
+      return response.data;
     } catch (error) {
       console.error('Error fetching detailed crypto data:', error);
       return null;
+    }
+  };
+
+  export const fetchCoins = async () => {
+    try{
+      const response = await fetch(`${COINGECKO_API_URL}/coins/list`)
+      if(!response.ok){
+        throw new Error(`Failed to fetch coins list: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.map((coin) => ({
+        id: coin.id,
+        name: coin.name,
+        symbol: coin.symbol,
+      }));
+    }catch(error) {
+      console.error('Error fetching list of coins:', error);
+      throw error;
     }
   };

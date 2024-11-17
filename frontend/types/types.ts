@@ -122,6 +122,7 @@ export interface Transactions {
   }
 
   export type CryptoAsset = {
+    id: number;
     crypto_name: string;
     amount_held: number;
   }

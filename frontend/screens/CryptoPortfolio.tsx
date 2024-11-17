@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import PortfolioValue from '../components/CryptoPortfolioScreen/PortfolioValue';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -72,6 +72,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#212121',
   },
+  assetItem: { 
+    padding: 16, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc' 
+  },
+  addButton: { 
+    padding: 12, 
+    backgroundColor: '#28a745', 
+    borderRadius: 5, 
+    marginTop: 16 
+  },
+  addButtonText: { 
+    color: 'white', 
+    textAlign: 'center' 
+  },
+  assetName: {
+    fontSize: 16,
+  }
 });
 
 const CryptoPortfolio = () => {
@@ -135,7 +153,24 @@ const CryptoPortfolio = () => {
           onPress={() => navigation.navigate('CryptoAIRecommendations')}
         />
       </View>
+      <FlatList
+        data={portfolio}
+        keyExtractor={(item) => item.id ? item.id.toString() : `${Math.random()}`}
+        renderItem={({ item }) => (
+          <View style={styles.assetItem}>
+            <Text style={styles.assetName}>{item.crypto_name}</Text>
+            <Text>Amount Held: {item.amount_held}</Text>
+          </View>
+        )}
+      />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('AddCryptoAsset')}
+      >
+        <Text style={styles.addButtonText}>+ Add Asset</Text>
+      </TouchableOpacity>
     </ScrollView>
+    
   );
 };
 
