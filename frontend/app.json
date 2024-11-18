@@ -3,6 +3,7 @@
     "name": "BudgetBee",
     "slug": "BudgetBee",
     "version": "1.0.0",
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,6 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yourname.BudgetBee",
+      "newArchEnabled": true,
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -24,7 +26,8 @@
           },
          "package": "com.yourname.BudgetBee",
          "permissions": [],
-         "debuggable": true
+         "debuggable": true,
+         "newArchEnabled": true
         },
     "web": {
       "favicon": "./assets/favicon.png"

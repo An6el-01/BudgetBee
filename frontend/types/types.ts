@@ -122,7 +122,11 @@ export interface Transactions {
   }
 
   export type CryptoAsset = {
-    id: number;
+    id: string;
     crypto_name: string;
     amount_held: number;
+    image_url: string;
+    market_value: number;
+    current_price: number;
   }
+

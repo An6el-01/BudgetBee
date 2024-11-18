@@ -206,7 +206,7 @@ export default function BottomNavBar() {
           title: 'Add Crypto Asset',
           tabBarButton:() => null,
           headerLeft: () => (
-            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("Crypto Portfolio")}>
+            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("CryptoPortfolio")}>
               <Ionicons name="arrow-back" size={24} color="#000000" />
               <Text style={styles.backIconName}>Go Back</Text>
             </TouchableOpacity>
@@ -220,7 +220,7 @@ export default function BottomNavBar() {
           title: 'Crypto Reports',
           tabBarButton:() => null,
           headerLeft: () => (
-            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("Crypto Portfolio")}>
+            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("CryptoPortfolio")}>
               <Ionicons name="arrow-back" size={24} color="#000000" />
               <Text style={styles.backIconName}>Go Back</Text>
             </TouchableOpacity>
@@ -234,7 +234,7 @@ export default function BottomNavBar() {
           title: 'AI Recommendations',
           tabBarButton:() => null,
           headerLeft: () => (
-            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("Crypto Portfolio")}>
+            <TouchableOpacity  style={styles.backIcon}onPress={() => navigation.navigate("CryptoPortfolio")}>
               <Ionicons name="arrow-back" size={24} color="#000000" />
               <Text style={styles.backIconName}>Go Back</Text>
             </TouchableOpacity>

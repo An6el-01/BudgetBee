@@ -90,24 +90,6 @@ export const tableDataMap = {
       "favorite": false
     }
    ],
-   CryptoPortfolios: [
-    {
-      "id": 1,
-      "user_id": 1,
-      "crypto_name": "LiteCoin",
-      "amount_held": 2.2511,
-      "current_value": 13855.74,
-      "last_updated": 1729033200000
-    },
-    {
-      "id": 2,
-      "user_id": 1,
-      "crypto_name": "Bitcoin",
-      "amount_held": 7.855,
-      "current_value": 47981.35,
-      "last_updated": 1707868800000
-    }
-   ],
    Currencies: [
     {
       "id": 1,
