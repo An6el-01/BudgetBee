@@ -60,6 +60,7 @@ export default function AddCryptoAsset({ navigation }: AddCryptoAssetProps){
     const [searchQuery, setSearchQuery] =  useState('');
     const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
     const [amount, setAmount] = useState('');
+    const [purchasePrice, setPurchasePrice] = useState('');
     const db = useContext(SQLiteContext);
 
     useEffect(() => {
@@ -79,7 +80,7 @@ export default function AddCryptoAsset({ navigation }: AddCryptoAssetProps){
             Alert.alert('Error', 'You must be logged in to add a crypto asset');
             return;
         }
-        if(!selectedCoin || !amount) {
+        if(!selectedCoin || !amount || !purchasePrice) {
             Alert.alert('Error', 'Please select a coin and enter an amount');
             return;
         }
@@ -92,13 +93,14 @@ export default function AddCryptoAsset({ navigation }: AddCryptoAssetProps){
                 amount_held:parseFloat(amount),
                 current_value: 0, //implement a function for this later
                 last_updated: Date.now(),
+                purchase_price: parseFloat(purchasePrice),
             };
 
             if(!db) return
             await db.runAsync(
-                `INSERT INTO CryptoPortfolios (user_id, crypto_name, amount_held, current_value, last_updated)
+                `INSERT INTO CryptoPortfolios (user_id, crypto_name, amount_held, purchase_price, current_value, last_updated)
          VALUES (?, ?, ?, ?, ?)`,
-         [portfolioEntry.user_id, portfolioEntry.crypto_name, portfolioEntry.amount_held, portfolioEntry.current_value, portfolioEntry.last_updated]
+         [portfolioEntry.user_id, portfolioEntry.crypto_name, portfolioEntry.amount_held, portfolioEntry.current_value, portfolioEntry.purchase_price, portfolioEntry.last_updated]
             );
             Alert.alert('Success', `Crypto asset: ${portfolioEntry.crypto_name} added successfully`);
             navigation.navigate('CryptoPortfolio');
@@ -140,6 +142,13 @@ export default function AddCryptoAsset({ navigation }: AddCryptoAssetProps){
                         keyboardType="numeric"
                         value={amount}
                         onChangeText={setAmount}
+                    />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter purchase price"
+                        keyboardType="numeric"
+                        value={purchasePrice}
+                        onChangeText={setPurchasePrice} // Set purchase price
                     />
                     <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                         <Text style={styles.saveText}>Save Asset</Text>

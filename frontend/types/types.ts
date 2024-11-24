@@ -54,6 +54,7 @@ export interface Transactions {
     amount_held: number;
     current_value: number;
     last_updated: number;
+    purchase_price: number;  
   }
 
   export interface Investments {
@@ -128,5 +129,7 @@ export interface Transactions {
     image_url: string;
     market_value: number;
     current_price: number;
+    purchase_price: number;
+    coin_holding: string;
   }
 

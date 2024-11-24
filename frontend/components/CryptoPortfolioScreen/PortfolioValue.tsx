@@ -13,21 +13,15 @@ const PortfolioValue: React.FC<PortfolioValueProps> = ({ portfolio }) => {
 
   useEffect(() => {
     const getPortfolioValue = async () => {
-      const cryptoIds = portfolio.map(asset => asset.crypto_name.toLowerCase());
-      const prices = await fetchCryptoMarketData(cryptoIds);
-
-      if (prices) {
-        const value = portfolio.reduce((sum, asset) => {
-          const price = prices.find((priceData: { id: string, current_price: number }) => 
-          priceData.id === asset.crypto_name.toLowerCase())?.current_price || 0;
-          return sum + asset.amount_held * price;
-        }, 0);
-        setTotalValue(value);
-      }
+      const value = portfolio.reduce((sum, asset) => {
+        return sum + asset.market_value; // Use dynamic market value
+      }, 0);
+      setTotalValue(value);
     };
-
+  
     getPortfolioValue();
   }, [portfolio]);
+  
 
   return (
     <View style={styles.container}>

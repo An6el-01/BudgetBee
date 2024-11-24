@@ -147,7 +147,7 @@ const CryptoPortfolio = () => {
       }
             // Fetch stored portfolio from the database
       const storedPortfolio = await db.getAllAsync<CryptoAsset>(
-        `SELECT id, crypto_name, amount_held FROM CryptoPortfolios WHERE user_id = ?`,
+        `SELECT id, crypto_name, amount_held, purchase_price FROM CryptoPortfolios WHERE user_id = ?`,
         [storedUserId]
       );
 
@@ -167,10 +167,16 @@ const CryptoPortfolio = () => {
           (data) => data.id.toLowerCase() === asset.crypto_name.toLowerCase()
         );
 
+        const coinHolding = coinData && asset.amount_held > 0 
+        ? asset.amount_held / asset.purchase_price : 0;
+
+        const currentMarketValue = coinHolding * (coinData ? coinData.current_price : 0);
+
         return {
           ...asset,
           current_price: coinData ? coinData.current_price : 0,
-          market_value: coinData ? coinData.current_price * asset.amount_held : 0,
+          market_value: currentMarketValue,
+          coin_holding: coinHolding.toFixed(6),
           image_url: coinData ? coinData.image : '',
         };
       });
@@ -183,19 +189,28 @@ const CryptoPortfolio = () => {
     }
   };
 
-  const renderAsset = ({ item }: { item: CryptoAsset }) => (
-    <View style={styles.assetItem}>
-      <View style={styles.assetRow}>
-        <Image source={{ uri: item.image_url }} style={styles.coinIcon} resizeMode="contain" />
-        <View style={styles.assetDetails}>
-          <Text>{item.crypto_name}</Text>
-          <Text>Amount Held: {item.amount_held}</Text>
-          <Text style={styles.marketValue}>Market Value: ${item.market_value.toFixed(2)}</Text>
-
+  const renderAsset = ({ item }: { item: CryptoAsset }) => {
+    const valueChange = ((item.current_price - item.purchase_price) / item.purchase_price) * 100;
+  
+    return (
+      <View style={styles.assetItem}>
+        <View style={styles.assetRow}>
+          <Image source={{ uri: item.image_url }} style={styles.coinIcon} resizeMode="contain" />
+          <View style={styles.assetDetails}>
+            <Text>{item.crypto_name}</Text>
+            <Text>Money Invested: ${item.amount_held.toFixed(2)}</Text>
+            <Text>Number of Coins: {item.coin_holding}</Text>
+            <Text>Purchase Price: ${item.purchase_price.toFixed(2)}</Text>
+            <Text style={styles.marketValue}>Market Value: ${item.market_value.toFixed(2)}</Text>
+            <Text style={styles.marketValue}>
+              Value Change: {valueChange.toFixed(2)}%
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
+  
 
   return (
     <View style={styles.container}>
