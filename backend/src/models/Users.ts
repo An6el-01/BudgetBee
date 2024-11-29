@@ -1,26 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/database';
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/database";
 
-export class User extends Model {
-    public id!: number;
-    public username!: string;
-    public email!: string;
-    public password_hash!: string;
-    public is_premium!: boolean;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-}
+export class Users extends Model {}
 
-User.init(
+Users.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+            allowNull: false,
         },
         username: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
         },
         email: {
             type: DataTypes.STRING,
@@ -35,9 +29,18 @@ User.init(
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
+        created_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+        },
     },
     {
         sequelize,
-        modelName: 'User',
+        modelName: "Users",
+        tableName: "Users",
     }
 );
