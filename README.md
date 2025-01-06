@@ -1,6 +1,6 @@
 # Budgeting App
 
-A cross platform financial management app built to empower users with advanced tools for tracking expenses, setting budgets, managing investments, and much more. The app leverages **React Native**, **Node.js**, **Express.js**, **PostgreSQL**, **Python**, **TypeScript**, and Docker to provide a scalable and seamless financial management experience for a large user base.
+A cross platform financial management app built to empower users with advanced tools for tracking expenses, setting budgets, managing investments, and much more. The app leverages **React Native**, **Node.js**, **Express.js**, **PostgreSQL**, **Python**, **TypeScript**, and **Docker** to provide a scalable and seamless financial management experience for a large user base.
 
 ## Features
 
